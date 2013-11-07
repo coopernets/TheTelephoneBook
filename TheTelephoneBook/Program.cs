@@ -10,6 +10,7 @@ namespace TheTelephoneBook
     {
         public static string[] nameArray = new string[20];
         public static string[] phoneNumberArray = new string[20];
+        public static int indexMem = 0;
         static void Main(string[] args)
         {
             Menu();
@@ -20,19 +21,17 @@ namespace TheTelephoneBook
             Console.WriteLine("                           New Record Creator                           ");
             Console.WriteLine("Please press enter to create a new record and press escape when finished");
             Console.Write(new string('-', Console.WindowWidth));
-            int indexMem = 0;
+
             int i = 0;
             ConsoleKeyInfo ck;
             ck = Console.ReadKey();
             while (ck.Key != ConsoleKey.Escape)
             {
+
                 Console.Write("Please enter the full name: ");
-                string nameTemp = Console.ReadLine();
+                nameArray[i] = Console.ReadLine();
                 Console.Write("Please enter the Phone number: ");
-                string phoneTemp = Console.ReadLine();
-                nameArray[i] = nameTemp;
-                phoneNumberArray[i] = phoneTemp;
-                indexMem = i;
+                phoneNumberArray[i] = Console.ReadLine();
                 i++;
                 ck = Console.ReadKey();
             }
@@ -56,6 +55,7 @@ namespace TheTelephoneBook
             Console.WriteLine("3. List Records");
             Console.WriteLine("4. Exit the Phone Book");
             Console.WriteLine("");
+            Wrong:
             Console.Write("Please select a menu Option: ");
             menuSelect = int.Parse(Console.ReadLine());
             switch (menuSelect)
@@ -75,15 +75,20 @@ namespace TheTelephoneBook
                 case 4:
                     Environment.Exit(0);
                     break;
+                default:
+                    goto Wrong;
+                    
             }
         }
         public static void ListRecords()
         {
+            Console.WriteLine("List of Contacts");
+            Console.Write(new string('-', Console.WindowWidth));
             for (int i = 0; i < nameArray.Count(); i++)
             {
                 if (nameArray[i] != null)
                 {
-                    Console.WriteLine(nameArray[i] + " | " + phoneNumberArray[i]);
+                    Console.WriteLine((i + 1) + " " + nameArray[i] + " | " + phoneNumberArray[i]);
                 }
 
 
@@ -93,7 +98,45 @@ namespace TheTelephoneBook
         }
         public static void DeleteRecord()
         {
+            Console.WriteLine("List of Contacts");
+            Console.Write(new string('-', Console.WindowWidth));
+            for (int i = 0; i < nameArray.Count(); i++)
+            {
+                if (nameArray[i] != null)
+                {
+                    Console.WriteLine((i + 1) + " " + nameArray[i] + " | " + phoneNumberArray[i]);
+                }
 
+
+            }
+            int recordSelect;
+            Console.Write("Please select a record to delete: ");
+            recordSelect = int.Parse(Console.ReadLine());
+            nameArray[recordSelect - 1] = null;
+            phoneNumberArray[recordSelect - 1] = null;
+            MoveRecord();
+            Console.WriteLine("Record " + recordSelect.ToString() + " has been Deleted");
+            Console.ReadLine();
+            Menu();
+        }
+        public static void MoveRecord()
+        {
+            int j = nameArray.Count() - 1;
+            for (int i = 0; i < j; i++)
+            {
+                string tempName;
+                string tempNum;
+                if (nameArray[i] == null)
+                {
+                    tempName = nameArray[i + 1];
+                    tempNum = phoneNumberArray[i + 1];
+                    nameArray[i] = tempName;
+                    phoneNumberArray[i] = tempNum;
+                    nameArray[i + 1] = null;
+                    phoneNumberArray[i + 1] = null;
+                    i++;
+                }
+            }
         }
 
     }
